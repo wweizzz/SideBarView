@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.gyf.immersionbar.ImmersionBar;
 import com.lzj.sidebar.SideBarLayout;
 import com.lzj.sidebarviewdemo.adapter.SortAdapter;
 import com.lzj.sidebarviewdemo.bean.SortBean;
@@ -24,20 +23,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 参考示例
  */
 public class MainActivity extends AppCompatActivity  implements   TextWatcher {
-    @BindView(R.id.iv_back)
-    ImageView ivBack;
-    @BindView(R.id.edt_search)
+
     EditText edtSearch;
-    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.sidebar)
     SideBarLayout sidebarView;
     SortAdapter mSortAdaper;
     List<SortBean> mList;
@@ -46,8 +39,10 @@ public class MainActivity extends AppCompatActivity  implements   TextWatcher {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        ImmersionBar.with(this).transparentStatusBar().fitsSystemWindows(false).statusBarDarkFont(false).init();
+
+        edtSearch = findViewById(R.id.edt_search);
+        recyclerView = findViewById(R.id.recyclerView);
+        sidebarView = findViewById(R.id.sidebar);
 
         edtSearch.addTextChangedListener(this);
         mScrollState = -1;
