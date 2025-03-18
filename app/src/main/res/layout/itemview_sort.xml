@@ -36,33 +36,6 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="15dp">
-
-
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="82dp"
-            android:scaleType="fitXY"
-            android:src="@mipmap/test" />
-
-
-        <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            tools:text="成都市青羊区通顺桥2号城置豪庭汇2楼"
-            android:textColor="@color/c3d3d"
-            android:textSize="13sp" />
-
-    </LinearLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

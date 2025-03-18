@@ -27,16 +27,15 @@ class SortAdapter(layoutResId: Int, private val mData: MutableList<SortBean>) :
                 (viewHolder.getView<View>(R.id.tv_key)).visibility = View.GONE
             }
         }
-        viewHolder.setText(R.id.tv_key, item.word)
+        viewHolder.setText(R.id.tv_key, item.first)
         viewHolder.setText(R.id.tv_name, item.name)
-        viewHolder.setText(R.id.tv_address, item.address)
     }
 
     /**
      * 根据View的当前位置获取分类的首字母的Char ascii值
      */
     fun getSectionForPosition(position: Int): Int {
-        return data[position].word[0].code
+        return data[position].first[0].code
     }
 
     /**
@@ -44,7 +43,7 @@ class SortAdapter(layoutResId: Int, private val mData: MutableList<SortBean>) :
      */
     fun getPositionForSection(section: Int): Int {
         for (i in data.indices) {
-            val sortStr = data[i].word
+            val sortStr = data[i].first
             val firstChar = sortStr.uppercase(Locale.getDefault())[0]
             if (firstChar.code == section) {
                 return i

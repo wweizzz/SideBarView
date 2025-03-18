@@ -9,24 +9,14 @@
     <!--1-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@mipmap/ic_search_bg"
-        android:paddingTop="35dp">
+        android:layout_height="wrap_content"
+        android:paddingTop="44dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingTop="10dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="10dp" />
 
             <EditText
                 android:id="@+id/edt_search"
@@ -71,8 +61,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:sidebarSelectTextColor="@color/hotpink"
-            app:sidebarUnSelectTextColor="@color/colorPrimary"
             app:sidebarSelectTextSize="12sp"
+            app:sidebarUnSelectTextColor="@color/colorPrimary"
             app:sidebarUnSelectTextSize="10sp"
             app:sidebarWordBackground="@drawable/sort_text_bg"
             app:sidebarWordTextColor="@color/white"
