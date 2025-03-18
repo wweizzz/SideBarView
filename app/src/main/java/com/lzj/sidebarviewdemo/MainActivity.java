@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.lzj.sidebar.SideBarLayout;
 import com.lzj.sidebarviewdemo.adapter.SortAdapter;
@@ -32,9 +31,11 @@ public class MainActivity extends AppCompatActivity  implements   TextWatcher {
     EditText edtSearch;
     RecyclerView recyclerView;
     SideBarLayout sidebarView;
-    SortAdapter mSortAdaper;
+    SortAdapter mSortAdapter;
+
     List<SortBean> mList;
     private int mScrollState = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +55,10 @@ public class MainActivity extends AppCompatActivity  implements   TextWatcher {
         createTestData();
         //进行排序
         Collections.sort(mList, new SortComparator());
-        mSortAdaper = new SortAdapter(R.layout.itemview_sort, mList);
+
+        mSortAdapter = new SortAdapter(R.layout.itemview_sort, mList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this)); //设置LayoutManager为LinearLayoutManager
-        recyclerView.setAdapter(mSortAdaper);
+        recyclerView.setAdapter(mSortAdapter);
         recyclerView.setNestedScrollingEnabled(false);//解决滑动不流畅
 
     }
@@ -130,12 +132,12 @@ public class MainActivity extends AppCompatActivity  implements   TextWatcher {
             if (searchList.size() > 0) {
                 sidebarView.onItemScrollUpdateSideBarText(searchList.get(0).getWord());
             }
-            mSortAdaper.setNewData(searchList);
+            mSortAdapter.setNewData(searchList);
         } else {
             sidebarView.onItemScrollUpdateSideBarText(mList.get(0).getWord());
-            mSortAdaper.setNewData(mList);
+            mSortAdapter.setNewData(mList);
         }
-        mSortAdaper.notifyDataSetChanged();
+        mSortAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -162,7 +164,6 @@ public class MainActivity extends AppCompatActivity  implements   TextWatcher {
                 results.add(list.get(i));
             }
         }
-
         return results;
     }
 
