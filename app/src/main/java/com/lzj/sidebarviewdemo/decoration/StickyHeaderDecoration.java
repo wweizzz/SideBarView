@@ -4,37 +4,37 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public abstract class StickyItemDecoration extends RecyclerView.ItemDecoration {
+public abstract class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
 
-    private int mHeight;
-    private Paint mPaint;
-    private TextPaint mTextPaint;
-    private Rect mTextBounds;
+    private final int mHeight = 100;
 
-    public StickyItemDecoration() {
-        mHeight = 100;
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.GRAY);
-        mTextPaint = new TextPaint();
+    private final Paint mTextPaint;
+    private final Paint mContentPaint;
+
+    private final Rect mTextBounds = new Rect();
+
+    public StickyHeaderDecoration() {
+        mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(Color.parseColor("#FF000000"));
         mTextPaint.setTextSize(48f);
-        mTextBounds = new Rect();
+
+        mContentPaint = new Paint();
+        mContentPaint.setAntiAlias(true);
+        mContentPaint.setColor(Color.GRAY);
     }
 
-
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
-        String previousStickyHeaderName = null;
-        String currentStickyHeaderName = null;
+        String previousStickyHeaderName;
+        String currentStickyHeaderName;
         int left = parent.getLeft();
         //Decoration 的右边位置
         int right = parent.getRight();
@@ -60,7 +60,7 @@ public abstract class StickyItemDecoration extends RecyclerView.ItemDecoration {
                 }
                 //Decoration 的顶边位置
                 int top = bottom - mHeight;
-                c.drawRect(left, top, right, bottom, mPaint);
+                c.drawRect(left, top, right, bottom, mContentPaint);
                 //绘制文字
                 mTextPaint.getTextBounds(currentStickyHeaderName, 0, currentStickyHeaderName.length(), mTextBounds);
                 c.drawText(currentStickyHeaderName, left, bottom - mHeight / 2 + mTextBounds.height() / 2, mTextPaint);
@@ -79,7 +79,7 @@ public abstract class StickyItemDecoration extends RecyclerView.ItemDecoration {
                 }
                 //Decoration 的顶边位置
                 int top = bottom - mHeight;
-                c.drawRect(left, top, right, bottom, mPaint);
+                c.drawRect(left, top, right, bottom, mContentPaint);
                 //绘制文字
                 mTextPaint.getTextBounds(currentStickyHeaderName, 0, currentStickyHeaderName.length(), mTextBounds);
                 c.drawText(currentStickyHeaderName, left, bottom - mHeight / 2 + mTextBounds.height() / 2, mTextPaint);
@@ -88,10 +88,9 @@ public abstract class StickyItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         //outRect 相当于 Item 的整体绘制区域,设置 left、top、right、bottom 相当于设置左上右下的内间距
-        //如设置 outRect.top = 5 则相当于设置 paddingTop 为 5px。
         int position = parent.getChildAdapterPosition(view);
         String stickyHeaderName = getStickyHeaderName(position);
         if (TextUtils.isEmpty(stickyHeaderName)) {

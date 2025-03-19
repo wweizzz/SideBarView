@@ -1,11 +1,13 @@
 package com.lzj.sidebarviewdemo.decoration;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,9 +24,10 @@ import java.util.Map;
 
 public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
     protected String TAG = "QDX";
-    private Paint mHeaderTxtPaint = new Paint(1);
-    private Paint mHeaderContentPaint;
-    protected int headerHeight = 136;
+    private final Paint mHeaderTxtPaint;
+    private final Paint mHeaderContentPaint;
+
+    protected int headerHeight = 100;
     private int textPaddingLeft = 50;
     private int textSize = 50;
     private int textColor = -16777216;
@@ -32,11 +35,13 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
     private final float txtYAxis;
     private RecyclerView mRecyclerView;
     private boolean isInitHeight = false;
-    private SparseArray<Integer> stickyHeaderPosArray = new SparseArray();
+    private final SparseIntArray stickyHeaderPosArray = new SparseIntArray();
     private GestureDetector gestureDetector;
-    private Map<Integer, View> headViewMap = new HashMap();
+    private final Map<Integer, View> headViewMap = new HashMap<>();
+
     private NormalDecoration.OnHeaderClickListener headerClickEvent;
-    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+
+    private final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
         public boolean onDown(MotionEvent e) {
             return false;
         }
@@ -46,7 +51,7 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
 
         public boolean onSingleTapUp(MotionEvent e) {
             for(int i = 0; i < NormalDecoration.this.stickyHeaderPosArray.size(); ++i) {
-                int value = (Integer) NormalDecoration.this.stickyHeaderPosArray.valueAt(i);
+                int value = NormalDecoration.this.stickyHeaderPosArray.valueAt(i);
                 float y = e.getY();
                 if ((float)(value - NormalDecoration.this.headerHeight) <= y && y <= (float)value) {
                     if (NormalDecoration.this.headerClickEvent != null) {
@@ -72,9 +77,10 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
         }
     };
     private NormalDecoration.OnDecorationHeadDraw headerDrawEvent;
-    private Map<String, Drawable> imgDrawableMap = new HashMap();
+    private final Map<String, Drawable> imgDrawableMap = new HashMap();
 
     public NormalDecoration() {
+        this.mHeaderTxtPaint = new Paint(1);
         this.mHeaderTxtPaint.setColor(this.textColor);
         this.mHeaderTxtPaint.setTextSize((float)this.textSize);
         this.mHeaderTxtPaint.setTextAlign(Paint.Align.LEFT);
@@ -98,10 +104,10 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
             this.isInitHeight = true;
         }
 
-        int pos = parent.getChildAdapterPosition(itemView);
-        String curHeaderName = this.getHeaderName(pos);
+        int position = parent.getChildAdapterPosition(itemView);
+        String curHeaderName = this.getHeaderName(position);
         if (curHeaderName != null) {
-            if (pos == 0 || !curHeaderName.equals(this.getHeaderName(pos - 1))) {
+            if (position == 0 || !curHeaderName.equals(this.getHeaderName(position - 1))) {
                 outRect.top = this.headerHeight;
             }
 
@@ -152,10 +158,10 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
                             headerView.setDrawingCacheEnabled(true);
                             headerView.layout(0, 0, right, this.headerHeight);
                             this.headViewMap.put(pos, headerView);
-                            canvas.drawBitmap(headerView.getDrawingCache(), (float)left, (float)(viewTop - this.headerHeight), (Paint)null);
+                            canvas.drawBitmap(headerView.getDrawingCache(), (float)left, (float)(viewTop - this.headerHeight), null);
                         } else {
-                            View headerView = (View)this.headViewMap.get(pos);
-                            canvas.drawBitmap(headerView.getDrawingCache(), (float)left, (float)(viewTop - this.headerHeight), (Paint)null);
+                            View headerView = this.headViewMap.get(pos);
+                            canvas.drawBitmap(headerView.getDrawingCache(), (float)left, (float)(viewTop - this.headerHeight), null);
                         }
                     } else {
                         canvas.drawRect((float)left, (float)(viewTop - this.headerHeight), (float)right, (float)viewTop, this.mHeaderContentPaint);
@@ -182,10 +188,10 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
                     headerView.setDrawingCacheEnabled(true);
                     headerView.layout(0, 0, right, this.headerHeight);
                     this.headViewMap.put(firstPos, headerView);
-                    canvas.drawBitmap(headerView.getDrawingCache(), (float)left, 0.0F, (Paint)null);
+                    canvas.drawBitmap(headerView.getDrawingCache(), (float)left, 0.0F, null);
                 } else {
-                    View headerView = (View)this.headViewMap.get(firstPos);
-                    canvas.drawBitmap(headerView.getDrawingCache(), (float)left, 0.0F, (Paint)null);
+                    View headerView = this.headViewMap.get(firstPos);
+                    canvas.drawBitmap(headerView.getDrawingCache(), (float)left, 0.0F, null);
                 }
             } else {
                 canvas.drawRect((float)left, 0.0F, (float)right, (float)this.headerHeight, this.mHeaderContentPaint);
@@ -201,62 +207,19 @@ public abstract class NormalDecoration extends RecyclerView.ItemDecoration {
         this.headerClickEvent = headerClickListener;
     }
 
-    public void setOnDecorationHeadDraw(NormalDecoration.OnDecorationHeadDraw decorationHeadDraw) {
-        this.headerDrawEvent = decorationHeadDraw;
-    }
 
-    public void loadImage(final String url, final int pos, ImageView imageView) {
-        if (this.getImg(url) != null) {
-            Log.i("qdx", "Glide 加载完图片" + pos);
-            imageView.setImageDrawable(this.getImg(url));
-        } else {
-            Glide.with(this.mRecyclerView.getContext()).load(url).into(new SimpleTarget<Drawable>() {
-                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                    Log.i("qdx", "Glide回调" + pos);
-                    NormalDecoration.this.headViewMap.remove(pos);
-                    NormalDecoration.this.imgDrawableMap.put(url, resource);
-                    NormalDecoration.this.mRecyclerView.postInvalidate();
-                }
-            });
-        }
 
-    }
-
-    private Drawable getImg(String url) {
-        return (Drawable)this.imgDrawableMap.get(url);
-    }
 
     public void onDestory() {
         this.headViewMap.clear();
         this.imgDrawableMap.clear();
         this.stickyHeaderPosArray.clear();
         this.mRecyclerView = null;
-        this.setOnHeaderClickListener((NormalDecoration.OnHeaderClickListener)null);
-        this.setOnDecorationHeadDraw((NormalDecoration.OnDecorationHeadDraw)null);
+        this.setOnHeaderClickListener(null);
+
     }
 
-    public void setHeaderHeight(int headerHeight) {
-        this.headerHeight = headerHeight;
-    }
 
-    public void setTextPaddingLeft(int textPaddingLeft) {
-        this.textPaddingLeft = textPaddingLeft;
-    }
-
-    public void setTextSize(int textSize) {
-        this.textSize = textSize;
-        this.mHeaderTxtPaint.setTextSize((float)textSize);
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-        this.mHeaderTxtPaint.setColor(textColor);
-    }
-
-    public void setHeaderContentColor(int headerContentColor) {
-        this.headerContentColor = headerContentColor;
-        this.mHeaderContentPaint.setColor(headerContentColor);
-    }
 
     public interface OnDecorationHeadDraw {
         View getHeaderView(int var1);
