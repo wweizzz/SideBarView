@@ -10,6 +10,8 @@ import android.widget.EditText;
 import com.lzj.sidebar.SideBarLayout;
 import com.lzj.sidebarviewdemo.adapter.SortAdapter;
 import com.lzj.sidebarviewdemo.bean.SortBean;
+import com.lzj.sidebarviewdemo.decoration.NormalDecoration;
+import com.lzj.sidebarviewdemo.decoration.StickyItemDecoration;
 import com.lzj.sidebarviewdemo.utils.SortComparator;
 
 import java.util.ArrayList;
@@ -59,6 +61,19 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
 
         mSortAdapter = new SortAdapter(R.layout.itemview_sort, mList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this)); //设置LayoutManager为LinearLayoutManager
+        recyclerView.addItemDecoration(new StickyItemDecoration() {
+            @Override
+            public String getStickyHeaderName(int position) {
+                return mList.get(position).getFirst();
+            }
+        });
+
+        recyclerView.addItemDecoration(new NormalDecoration() {
+            @Override
+            public String getHeaderName(int position) {
+                return mList.get(position).getFirst();
+            }
+        });
         recyclerView.setAdapter(mSortAdapter);
         recyclerView.setNestedScrollingEnabled(false);//解决滑动不流畅
 
